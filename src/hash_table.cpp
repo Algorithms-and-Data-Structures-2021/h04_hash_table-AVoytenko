@@ -18,18 +18,44 @@ namespace itis {
     }
 
     // Tip: allocate hash-table buckets
+    buckets_.resize(capacity);
   }
 
   std::optional<std::string> HashTable::Search(int key) const {
     // Tip: compute hash code (index) and use linear search
+    auto index = hash(key);
+    auto bucket = buckets_[index];
+    for (std::pair <int, std::string> pair: bucket) {
+      if (pair.first == key) {
+        return pair.second;
+      }
+    }
+
     return std::nullopt;
   }
 
   void HashTable::Put(int key, const std::string &value) {
     // Tip 1: compute hash code (index) to determine which bucket to use
     // Tip 2: consider the case when the key exists (read the docs in the header file)
-
+    auto hashIndex = hash(key);
+    for (std:: pair<int, std::string> &pair: buckets_[hashIndex]) {
+      if (pair.first == key) {
+        pair.second = value;
+        return;
+      }
+    }
+    buckets_[hashIndex].emplace_back(key, value);
+    num_keys_++;
     if (static_cast<double>(num_keys_) / buckets_.size() >= load_factor_) {
+      std::vector<Bucket> new_buckets = std::vector<Bucket>{};
+      new_buckets.resize(buckets_.size() * kGrowthCoefficient);
+      for (Bucket &bucket : buckets_){
+        for (auto& pair : bucket){
+          auto new_index = utils::hash(pair.first, new_buckets.size());
+          new_buckets[new_index].push_back(pair);
+        }
+      }
+      buckets_ = new_buckets;
       // Tip 3: recompute hash codes (indices) for key-value pairs (create a new hash-table)
       // Tip 4: use utils::hash(key, size) to compute new indices for key-value pairs
     }
@@ -38,6 +64,14 @@ namespace itis {
   std::optional<std::string> HashTable::Remove(int key) {
     // Tip 1: compute hash code (index) to determine which bucket to use
     // TIp 2: find the key-value pair to remove and make a copy of value to return
+    int index = hash(key);
+    for (const auto& pair : buckets_[index]) {
+      if (pair.first == key) {
+        std::string to_return = pair.second;
+        buckets_[index].remove(pair);
+        return to_return;
+      }
+    }
     return std::nullopt;
   }
 
