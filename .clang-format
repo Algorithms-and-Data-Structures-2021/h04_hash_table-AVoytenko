@@ -4,7 +4,7 @@ Standard: c++17
 AccessModifierOffset: -1
 AlignOperands: Align
 AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: None
+AlignConsecutiveAssignments: true
 BreakBeforeBinaryOperators: NonAssignment
 AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: false
@@ -45,7 +45,7 @@ IndentWidth: 2
 KeepEmptyLinesAtTheStartOfBlocks: true
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 MaxEmptyLinesToKeep: 1
-SortIncludes: Never
+SortIncludes: true
 NamespaceIndentation: All
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: false
